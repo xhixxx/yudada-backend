@@ -25,13 +25,15 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * 用户答案服务实现
  *
- * @from <a href="https://www.code-nav.cn">编程导航学习圈</a>
+ *
  */
 @Service
 @Slf4j
@@ -39,6 +41,7 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
 
     @Resource
     private UserService userService;
+
     @Resource
     private AppService appService;
 
@@ -49,16 +52,14 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
      * @param add        对创建的数据进行校验
      */
     @Override
-
     public void validUserAnswer(UserAnswer userAnswer, boolean add) {
         ThrowUtils.throwIf(userAnswer == null, ErrorCode.PARAMS_ERROR);
         // 从对象中取值
         Long appId = userAnswer.getAppId();
-
         // 创建数据时，参数不能为空
         if (add) {
-        // 补充校验规则
-            ThrowUtils.throwIf(appId == null || appId <= 0, ErrorCode.PARAMS_ERROR, "appId非法");
+            // 补充校验规则
+            ThrowUtils.throwIf(appId == null || appId <= 0, ErrorCode.PARAMS_ERROR, "appId 非法");
         }
         // 修改数据时，有参数则校验
         // 补充校验规则
@@ -80,7 +81,7 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
         if (userAnswerQueryRequest == null) {
             return queryWrapper;
         }
-        // todo 从对象中取值
+        // 从对象中取值
         Long id = userAnswerQueryRequest.getId();
         Long appId = userAnswerQueryRequest.getAppId();
         Integer appType = userAnswerQueryRequest.getAppType();
@@ -136,7 +137,7 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
         // 对象转封装类
         UserAnswerVO userAnswerVO = UserAnswerVO.objToVo(userAnswer);
 
-        // 以根据需要为封装对象补充值，不需要的内容可以删除
+        // 可以根据需要为封装对象补充值，不需要的内容可以删除
         // region 可选
         // 1. 关联查询用户信息
         Long userId = userAnswer.getUserId();
@@ -146,6 +147,8 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
         }
         UserVO userVO = userService.getUserVO(user);
         userAnswerVO.setUser(userVO);
+        // endregion
+
         return userAnswerVO;
     }
 
@@ -172,8 +175,8 @@ public class UserAnswerServiceImpl extends ServiceImpl<UserAnswerMapper, UserAns
         // region 可选
         // 1. 关联查询用户信息
         Set<Long> userIdSet = userAnswerList.stream().map(UserAnswer::getUserId).collect(Collectors.toSet());
-        Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream().collect(Collectors.groupingBy(User::getId));
-
+        Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
+                .collect(Collectors.groupingBy(User::getId));
         // 填充信息
         userAnswerVOList.forEach(userAnswerVO -> {
             Long userId = userAnswerVO.getUserId();

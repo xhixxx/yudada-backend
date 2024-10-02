@@ -6,7 +6,9 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 更新评分结果表请求
+ * 更新评分结果请求
+ *
+ *
  */
 @Data
 public class ScoringResultUpdateRequest implements Serializable {

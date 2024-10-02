@@ -34,12 +34,11 @@ import java.util.stream.Collectors;
 /**
  * 应用服务实现
  *
- * @from <a href="https://www.code-nav.cn">编程导航学习圈</a>
+ *
  */
 @Service
 @Slf4j
-public class AppServiceImpl extends ServiceImpl
-        <AppMapper, App> implements AppService {
+public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppService {
 
     @Resource
     private UserService userService;
@@ -67,19 +66,18 @@ public class AppServiceImpl extends ServiceImpl
             ThrowUtils.throwIf(StringUtils.isBlank(appDesc), ErrorCode.PARAMS_ERROR, "应用描述不能为空");
             AppTypeEnum appTypeEnum = AppTypeEnum.getEnumByValue(appType);
             ThrowUtils.throwIf(appTypeEnum == null, ErrorCode.PARAMS_ERROR, "应用类别非法");
-            AppScoringStrategyEnum ScoringStrategyEnum = AppScoringStrategyEnum.getEnumByValue(scoringStrategy);
-            ThrowUtils.throwIf(ScoringStrategyEnum == null, ErrorCode.PARAMS_ERROR, "应用评分策略非法");
+            AppScoringStrategyEnum scoringStrategyEnum = AppScoringStrategyEnum.getEnumByValue(scoringStrategy);
+            ThrowUtils.throwIf(scoringStrategyEnum == null, ErrorCode.PARAMS_ERROR, "应用评分策略非法");
         }
         // 修改数据时，有参数则校验
         // 补充校验规则
         if (StringUtils.isNotBlank(appName)) {
-            ThrowUtils.throwIf(appName.length() > 80, ErrorCode.PARAMS_ERROR, "应用名称过长（小于80）");
+            ThrowUtils.throwIf(appName.length() > 80, ErrorCode.PARAMS_ERROR, "应用名称要小于 80");
         }
         if (reviewStatus != null) {
             ReviewStatusEnum reviewStatusEnum = ReviewStatusEnum.getEnumByValue(reviewStatus);
             ThrowUtils.throwIf(reviewStatusEnum == null, ErrorCode.PARAMS_ERROR, "审核状态非法");
         }
-
     }
 
     /**
@@ -110,7 +108,6 @@ public class AppServiceImpl extends ServiceImpl
         String sortField = appQueryRequest.getSortField();
         String sortOrder = appQueryRequest.getSortOrder();
 
-
         // 补充需要的查询条件
         // 从多字段中搜索
         if (StringUtils.isNotBlank(searchText)) {
@@ -121,7 +118,6 @@ public class AppServiceImpl extends ServiceImpl
         queryWrapper.like(StringUtils.isNotBlank(appName), "appName", appName);
         queryWrapper.like(StringUtils.isNotBlank(appDesc), "appDesc", appDesc);
         queryWrapper.like(StringUtils.isNotBlank(reviewMessage), "reviewMessage", reviewMessage);
-
         // 精确查询
         queryWrapper.eq(StringUtils.isNotBlank(appIcon), "appIcon", appIcon);
         queryWrapper.ne(ObjectUtils.isNotEmpty(notId), "id", notId);
@@ -131,7 +127,6 @@ public class AppServiceImpl extends ServiceImpl
         queryWrapper.eq(ObjectUtils.isNotEmpty(reviewStatus), "reviewStatus", reviewStatus);
         queryWrapper.eq(ObjectUtils.isNotEmpty(reviewerId), "reviewerId", reviewerId);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
-
         // 排序规则
         queryWrapper.orderBy(SqlUtils.validSortField(sortField),
                 sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
@@ -161,6 +156,7 @@ public class AppServiceImpl extends ServiceImpl
         }
         UserVO userVO = userService.getUserVO(user);
         appVO.setUser(userVO);
+        // endregion
         return appVO;
     }
 
@@ -183,11 +179,10 @@ public class AppServiceImpl extends ServiceImpl
             return AppVO.objToVo(app);
         }).collect(Collectors.toList());
 
-        // todo 可以根据需要为封装对象补充值，不需要的内容可以删除
+        // 可以根据需要为封装对象补充值，不需要的内容可以删除
         // region 可选
         // 1. 关联查询用户信息
-        Set<Long> userIdSet = appList.stream().map(App
-                ::getUserId).collect(Collectors.toSet());
+        Set<Long> userIdSet = appList.stream().map(App::getUserId).collect(Collectors.toSet());
         Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
                 .collect(Collectors.groupingBy(User::getId));
         // 填充信息

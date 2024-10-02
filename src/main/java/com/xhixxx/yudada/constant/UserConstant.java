@@ -2,6 +2,8 @@ package com.xhixxx.yudada.constant;
 
 /**
  * 用户常量
+ *
+ *
  */
 public interface UserConstant {
 

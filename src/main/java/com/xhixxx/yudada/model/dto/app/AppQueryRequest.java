@@ -8,6 +8,8 @@ import java.io.Serializable;
 
 /**
  * 查询应用请求
+ *
+ *
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -58,12 +60,10 @@ public class AppQueryRequest extends PageRequest implements Serializable {
      */
     private Long reviewerId;
 
-
     /**
      * 创建用户 id
      */
     private Long userId;
-
 
     /**
      * id

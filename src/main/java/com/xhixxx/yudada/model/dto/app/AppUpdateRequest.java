@@ -7,6 +7,8 @@ import java.util.Date;
 
 /**
  * 更新应用请求
+ *
+ *
  */
 @Data
 public class AppUpdateRequest implements Serializable {

@@ -1,11 +1,12 @@
 package com.xhixxx.yudada.model.dto.user;
 
-import lombok.Data;
-
 import java.io.Serializable;
+import lombok.Data;
 
 /**
  * 用户更新个人信息请求
+ *
+ *
  */
 @Data
 public class UserUpdateMyRequest implements Serializable {

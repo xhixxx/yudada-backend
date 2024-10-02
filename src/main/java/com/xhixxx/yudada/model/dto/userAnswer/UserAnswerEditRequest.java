@@ -1,5 +1,7 @@
 package com.xhixxx.yudada.model.dto.userAnswer;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -7,6 +9,8 @@ import java.util.List;
 
 /**
  * 编辑用户答案请求
+ *
+ *
  */
 @Data
 public class UserAnswerEditRequest implements Serializable {
@@ -15,6 +19,7 @@ public class UserAnswerEditRequest implements Serializable {
      * id
      */
     private Long id;
+
 
     /**
      * 应用 id

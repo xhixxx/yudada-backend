@@ -1,10 +1,12 @@
 package com.xhixxx.yudada.utils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 网络工具类
+ *
+ *
  */
 public class NetUtils {
 

@@ -1,12 +1,17 @@
 package com.xhixxx.yudada.model.dto.scoringResult;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
- * 编辑评分结果表请求
+ * 编辑评分结果请求
+ *
+ *
  */
 @Data
 public class ScoringResultEditRequest implements Serializable {

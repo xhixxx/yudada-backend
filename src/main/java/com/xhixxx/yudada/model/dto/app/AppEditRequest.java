@@ -6,6 +6,8 @@ import java.io.Serializable;
 
 /**
  * 编辑应用请求
+ *
+ *
  */
 @Data
 public class AppEditRequest implements Serializable {

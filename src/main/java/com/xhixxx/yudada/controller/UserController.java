@@ -9,25 +9,39 @@ import com.xhixxx.yudada.common.ResultUtils;
 import com.xhixxx.yudada.constant.UserConstant;
 import com.xhixxx.yudada.exception.BusinessException;
 import com.xhixxx.yudada.exception.ThrowUtils;
-import com.xhixxx.yudada.model.dto.user.*;
+import com.xhixxx.yudada.model.dto.user.UserAddRequest;
+import com.xhixxx.yudada.model.dto.user.UserLoginRequest;
+import com.xhixxx.yudada.model.dto.user.UserQueryRequest;
+import com.xhixxx.yudada.model.dto.user.UserRegisterRequest;
+import com.xhixxx.yudada.model.dto.user.UserUpdateMyRequest;
+import com.xhixxx.yudada.model.dto.user.UserUpdateRequest;
 import com.xhixxx.yudada.model.entity.User;
 import com.xhixxx.yudada.model.vo.LoginUserVO;
 import com.xhixxx.yudada.model.vo.UserVO;
 import com.xhixxx.yudada.service.UserService;
+
+import java.util.List;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import static com.xhixxx.yudada.service.impl.UserServiceImpl.SALT;
 
 /**
  * 用户接口
+ *
+ *
  */
 @RestController
 @RequestMapping("/user")
@@ -163,7 +177,7 @@ public class UserController {
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest,
-                                            HttpServletRequest request) {
+            HttpServletRequest request) {
         if (userUpdateRequest == null || userUpdateRequest.getId() == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -216,7 +230,7 @@ public class UserController {
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Page<User>> listUserByPage(@RequestBody UserQueryRequest userQueryRequest,
-                                                   HttpServletRequest request) {
+            HttpServletRequest request) {
         long current = userQueryRequest.getCurrent();
         long size = userQueryRequest.getPageSize();
         Page<User> userPage = userService.page(new Page<>(current, size),
@@ -233,7 +247,7 @@ public class UserController {
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<UserVO>> listUserVOByPage(@RequestBody UserQueryRequest userQueryRequest,
-                                                       HttpServletRequest request) {
+            HttpServletRequest request) {
         if (userQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -260,7 +274,7 @@ public class UserController {
      */
     @PostMapping("/update/my")
     public BaseResponse<Boolean> updateMyUser(@RequestBody UserUpdateMyRequest userUpdateMyRequest,
-                                              HttpServletRequest request) {
+            HttpServletRequest request) {
         if (userUpdateMyRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }

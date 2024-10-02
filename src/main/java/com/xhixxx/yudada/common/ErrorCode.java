@@ -2,6 +2,8 @@ package com.xhixxx.yudada.common;
 
 /**
  * 自定义错误码
+ *
+ *
  */
 public enum ErrorCode {
 

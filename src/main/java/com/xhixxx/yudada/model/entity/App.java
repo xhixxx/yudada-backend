@@ -1,17 +1,16 @@
 package com.xhixxx.yudada.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * 应用
- *
  * @TableName app
  */
-@TableName(value = "app")
+@TableName(value ="app")
 @Data
 public class App implements Serializable {
     /**

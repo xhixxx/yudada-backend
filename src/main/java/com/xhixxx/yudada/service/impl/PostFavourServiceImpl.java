@@ -13,14 +13,15 @@ import com.xhixxx.yudada.model.entity.PostFavour;
 import com.xhixxx.yudada.model.entity.User;
 import com.xhixxx.yudada.service.PostFavourService;
 import com.xhixxx.yudada.service.PostService;
+import javax.annotation.Resource;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
-
 /**
  * 帖子收藏服务实现
+ *
+ *
  */
 @Service
 public class PostFavourServiceImpl extends ServiceImpl<PostFavourMapper, PostFavour>

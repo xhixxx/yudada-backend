@@ -2,13 +2,14 @@ package com.xhixxx.yudada.model.dto.postfavour;
 
 import com.xhixxx.yudada.common.PageRequest;
 import com.xhixxx.yudada.model.dto.post.PostQueryRequest;
+import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
-
 /**
  * 帖子收藏查询请求
+ *
+ *
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

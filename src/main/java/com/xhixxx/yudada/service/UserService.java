@@ -6,12 +6,13 @@ import com.xhixxx.yudada.model.dto.user.UserQueryRequest;
 import com.xhixxx.yudada.model.entity.User;
 import com.xhixxx.yudada.model.vo.LoginUserVO;
 import com.xhixxx.yudada.model.vo.UserVO;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 用户服务
+ *
+ *
  */
 public interface UserService extends IService<User> {
 

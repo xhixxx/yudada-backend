@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * 应用服务
+ *
+ *
  */
 public interface AppService extends IService<App> {
 
@@ -29,7 +31,7 @@ public interface AppService extends IService<App> {
      * @return
      */
     QueryWrapper<App> getQueryWrapper(AppQueryRequest appQueryRequest);
-
+    
     /**
      * 获取应用封装
      *
@@ -46,6 +48,5 @@ public interface AppService extends IService<App> {
      * @param request
      * @return
      */
-    Page
-            <AppVO> getAppVOPage(Page<App> appPage, HttpServletRequest request);
+    Page<AppVO> getAppVOPage(Page<App> appPage, HttpServletRequest request);
 }

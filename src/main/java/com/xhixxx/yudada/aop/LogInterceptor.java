@@ -1,5 +1,7 @@
 package com.xhixxx.yudada.aop;
 
+import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -11,11 +13,10 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.UUID;
-
 /**
  * 请求响应日志 AOP
+ *
+ *
  **/
 @Aspect
 @Component

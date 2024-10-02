@@ -1,8 +1,8 @@
 package com.xhixxx.yudada.model.dto.question;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.util.List;
 
@@ -10,8 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuestionContentDTO {
-
-
 
     /**
      * 题目标题

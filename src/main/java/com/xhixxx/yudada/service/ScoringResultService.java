@@ -10,7 +10,9 @@ import com.xhixxx.yudada.model.vo.ScoringResultVO;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 评分结果表服务
+ * 评分结果服务
+ *
+ *
  */
 public interface ScoringResultService extends IService<ScoringResult> {
 
@@ -18,7 +20,7 @@ public interface ScoringResultService extends IService<ScoringResult> {
      * 校验数据
      *
      * @param scoringResult
-     * @param add           对创建的数据进行校验
+     * @param add 对创建的数据进行校验
      */
     void validScoringResult(ScoringResult scoringResult, boolean add);
 
@@ -29,9 +31,9 @@ public interface ScoringResultService extends IService<ScoringResult> {
      * @return
      */
     QueryWrapper<ScoringResult> getQueryWrapper(ScoringResultQueryRequest scoringResultQueryRequest);
-
+    
     /**
-     * 获取评分结果表封装
+     * 获取评分结果封装
      *
      * @param scoringResult
      * @param request
@@ -40,12 +42,11 @@ public interface ScoringResultService extends IService<ScoringResult> {
     ScoringResultVO getScoringResultVO(ScoringResult scoringResult, HttpServletRequest request);
 
     /**
-     * 分页获取评分结果表封装
+     * 分页获取评分结果封装
      *
      * @param scoringResultPage
      * @param request
      * @return
      */
-    Page
-            <ScoringResultVO> getScoringResultVOPage(Page<ScoringResult> scoringResultPage, HttpServletRequest request);
+    Page<ScoringResultVO> getScoringResultVOPage(Page<ScoringResult> scoringResultPage, HttpServletRequest request);
 }

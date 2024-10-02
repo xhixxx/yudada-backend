@@ -1,6 +1,8 @@
 package com.xhixxx.yudada.model.vo;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.xhixxx.yudada.model.dto.question.QuestionContentDTO;
 import com.xhixxx.yudada.model.entity.Question;
 import lombok.Data;
@@ -12,6 +14,8 @@ import java.util.List;
 
 /**
  * 题目视图
+ *
+ *
  */
 @Data
 public class QuestionVO implements Serializable {

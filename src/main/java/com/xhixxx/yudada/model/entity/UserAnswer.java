@@ -1,21 +1,20 @@
 package com.xhixxx.yudada.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * 用户答题记录
- *
  * @TableName user_answer
  */
-@TableName(value = "user_answer")
+@TableName(value ="user_answer")
 @Data
 public class UserAnswer implements Serializable {
     /**
-     * id
+     * 
      */
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;

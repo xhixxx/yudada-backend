@@ -1,19 +1,25 @@
 package com.xhixxx.yudada.model.dto.userAnswer;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.xhixxx.yudada.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 查询用户答案请求
+ *
+ *
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class UserAnswerQueryRequest extends PageRequest implements Serializable {
+
     /**
-     * id
+     *
      */
     private Long id;
 

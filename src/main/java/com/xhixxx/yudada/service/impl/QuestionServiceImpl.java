@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 /**
  * 题目服务实现
  *
- * @from <a href="https://www.code-nav.cn">编程导航学习圈</a>
+ *
  */
 @Service
 @Slf4j
@@ -59,9 +59,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         Long appId = question.getAppId();
         // 创建数据时，参数不能为空
         if (add) {
-        // 补充校验规则
-            ThrowUtils.throwIf(StringUtils.isBlank(questionContent), ErrorCode.PARAMS_ERROR, "题目不能为空");
-            ThrowUtils.throwIf(appId == null || appId <= 0, ErrorCode.PARAMS_ERROR, "appId非法");
+            // 补充校验规则
+            ThrowUtils.throwIf(StringUtils.isBlank(questionContent), ErrorCode.PARAMS_ERROR, "题目内容不能为空");
+            ThrowUtils.throwIf(appId == null || appId <= 0, ErrorCode.PARAMS_ERROR, "appId 非法");
         }
         // 修改数据时，有参数则校验
         // 补充校验规则
@@ -94,12 +94,11 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 
         // 补充需要的查询条件
         // 模糊查询
-        queryWrapper.like(StringUtils.isNotBlank(questionContent), "title", questionContent);
-
+        queryWrapper.like(StringUtils.isNotBlank(questionContent), "questionContent", questionContent);
         // 精确查询
-        queryWrapper.ne(ObjectUtils.isNotEmpty(appId), "appId", appId);
         queryWrapper.ne(ObjectUtils.isNotEmpty(notId), "id", notId);
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(appId), "appId", appId);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
         // 排序规则
         queryWrapper.orderBy(SqlUtils.validSortField(sortField),
@@ -130,7 +129,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         }
         UserVO userVO = userService.getUserVO(user);
         questionVO.setUser(userVO);
-      return questionVO;
+        // endregion
+
+        return questionVO;
     }
 
     /**
@@ -155,11 +156,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         // 可以根据需要为封装对象补充值，不需要的内容可以删除
         // region 可选
         // 1. 关联查询用户信息
-        Set<Long> userIdSet = questionList.stream().map(Question
-                ::getUserId).collect(Collectors.toSet());
+        Set<Long> userIdSet = questionList.stream().map(Question::getUserId).collect(Collectors.toSet());
         Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
                 .collect(Collectors.groupingBy(User::getId));
-
         // 填充信息
         questionVOList.forEach(questionVO -> {
             Long userId = questionVO.getUserId();

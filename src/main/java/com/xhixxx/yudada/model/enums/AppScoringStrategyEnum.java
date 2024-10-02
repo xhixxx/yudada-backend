@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 /**
  * App 评分策略枚举
+ *
+ *
  */
 public enum AppScoringStrategyEnum {
 

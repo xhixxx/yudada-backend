@@ -1,14 +1,20 @@
 package com.xhixxx.yudada.model.vo;
 
+import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.xhixxx.yudada.model.entity.App;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 应用视图
+ *
+ *
  */
 @Data
 public class AppVO implements Serializable {

@@ -25,18 +25,19 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * 评分结果表服务实现
+ * 评分结果服务实现
  *
- * @from <a href="https://www.code-nav.cn">编程导航学习圈</a>
+ *
  */
 @Service
 @Slf4j
-public class ScoringResultServiceImpl extends ServiceImpl
-        <ScoringResultMapper, ScoringResult> implements ScoringResultService {
+public class ScoringResultServiceImpl extends ServiceImpl<ScoringResultMapper, ScoringResult> implements ScoringResultService {
 
     @Resource
     private UserService userService;
@@ -55,18 +56,17 @@ public class ScoringResultServiceImpl extends ServiceImpl
         ThrowUtils.throwIf(scoringResult == null, ErrorCode.PARAMS_ERROR);
         // 从对象中取值
         String resultName = scoringResult.getResultName();
-        String resultDesc = scoringResult.getResultDesc();
         Long appId = scoringResult.getAppId();
         // 创建数据时，参数不能为空
         if (add) {
             // 补充校验规则
             ThrowUtils.throwIf(StringUtils.isBlank(resultName), ErrorCode.PARAMS_ERROR, "结果名称不能为空");
-            ThrowUtils.throwIf(appId == null || appId <= 0, ErrorCode.PARAMS_ERROR, "appId非法");
+            ThrowUtils.throwIf(appId == null || appId <= 0, ErrorCode.PARAMS_ERROR, "appId 非法");
         }
         // 修改数据时，有参数则校验
         // 补充校验规则
         if (StringUtils.isNotBlank(resultName)) {
-            ThrowUtils.throwIf(resultName.length() > 128, ErrorCode.PARAMS_ERROR, "结果名称过长（小于128）");
+            ThrowUtils.throwIf(resultName.length() > 128, ErrorCode.PARAMS_ERROR, "结果名称不能超过 128");
         }
         // 补充校验规则
         if (appId != null) {
@@ -108,10 +108,9 @@ public class ScoringResultServiceImpl extends ServiceImpl
             queryWrapper.and(qw -> qw.like("resultName", searchText).or().like("resultDesc", searchText));
         }
         // 模糊查询
-        queryWrapper.like(StringUtils.isNotBlank(resultProp), "resultProp", resultProp);
         queryWrapper.like(StringUtils.isNotBlank(resultName), "resultName", resultName);
         queryWrapper.like(StringUtils.isNotBlank(resultDesc), "resultDesc", resultDesc);
-
+        queryWrapper.like(StringUtils.isNotBlank(resultProp), "resultProp", resultProp);
         // 精确查询
         queryWrapper.ne(ObjectUtils.isNotEmpty(notId), "id", notId);
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
@@ -127,7 +126,7 @@ public class ScoringResultServiceImpl extends ServiceImpl
     }
 
     /**
-     * 获取评分结果表封装
+     * 获取评分结果封装
      *
      * @param scoringResult
      * @param request
@@ -154,7 +153,7 @@ public class ScoringResultServiceImpl extends ServiceImpl
     }
 
     /**
-     * 分页获取评分结果表封装
+     * 分页获取评分结果封装
      *
      * @param scoringResultPage
      * @param request
@@ -178,19 +177,19 @@ public class ScoringResultServiceImpl extends ServiceImpl
         Set<Long> userIdSet = scoringResultList.stream().map(ScoringResult::getUserId).collect(Collectors.toSet());
         Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
                 .collect(Collectors.groupingBy(User::getId));
+        // 填充信息
+        scoringResultVOList.forEach(scoringResultVO -> {
+            Long userId = scoringResultVO.getUserId();
+            User user = null;
+            if (userIdUserListMap.containsKey(userId)) {
+                user = userIdUserListMap.get(userId).get(0);
+            }
+            scoringResultVO.setUser(userService.getUserVO(user));
+        });
+        // endregion
 
-            // 填充信息
-            scoringResultVOList.forEach(scoringResultVO -> {
-                Long userId = scoringResultVO.getUserId();
-                User user = null;
-                if (userIdUserListMap.containsKey(userId)) {
-                    user = userIdUserListMap.get(userId).get(0);
-                }
-                scoringResultVO.setUser(userService.getUserVO(user));
-            });
-            // endregion
+        scoringResultVOPage.setRecords(scoringResultVOList);
+        return scoringResultVOPage;
+    }
 
-            scoringResultVOPage.setRecords(scoringResultVOList);
-            return scoringResultVOPage;
-        }
 }

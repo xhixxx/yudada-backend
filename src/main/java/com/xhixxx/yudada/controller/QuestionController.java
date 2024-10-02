@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * 题目接口
  *
- * @from <a href="https://www.code-nav.cn">编程导航学习圈</a>
+ *
  */
 @RestController
 @RequestMapping("/question")
@@ -40,7 +40,7 @@ public class QuestionController {
     @Resource
     private UserService userService;
 
-// region 增删改查
+    // region 增删改查
 
     /**
      * 创建题目
@@ -78,8 +78,7 @@ public class QuestionController {
      * @return
      */
     @PostMapping("/delete")
-    public BaseResponse
-            <Boolean> deleteQuestion(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
+    public BaseResponse<Boolean> deleteQuestion(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -106,8 +105,7 @@ public class QuestionController {
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse
-            <Boolean> updateQuestion(@RequestBody QuestionUpdateRequest questionUpdateRequest) {
+    public BaseResponse<Boolean> updateQuestion(@RequestBody QuestionUpdateRequest questionUpdateRequest) {
         if (questionUpdateRequest == null || questionUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -135,8 +133,7 @@ public class QuestionController {
      * @return
      */
     @GetMapping("/get/vo")
-    public BaseResponse
-            <QuestionVO> getQuestionVOById(long id, HttpServletRequest request) {
+    public BaseResponse<QuestionVO> getQuestionVOById(long id, HttpServletRequest request) {
         ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
         // 查询数据库
         Question question = questionService.getById(id);
@@ -153,8 +150,7 @@ public class QuestionController {
      */
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public BaseResponse
-            <Page<Question>> listQuestionByPage(@RequestBody QuestionQueryRequest questionQueryRequest) {
+    public BaseResponse<Page<Question>> listQuestionByPage(@RequestBody QuestionQueryRequest questionQueryRequest) {
         long current = questionQueryRequest.getCurrent();
         long size = questionQueryRequest.getPageSize();
         // 查询数据库
@@ -171,9 +167,8 @@ public class QuestionController {
      * @return
      */
     @PostMapping("/list/page/vo")
-    public BaseResponse
-            <Page<QuestionVO>> listQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
-                                                    HttpServletRequest request) {
+    public BaseResponse<Page<QuestionVO>> listQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
+                                                               HttpServletRequest request) {
         long current = questionQueryRequest.getCurrent();
         long size = questionQueryRequest.getPageSize();
         // 限制爬虫
@@ -193,7 +188,8 @@ public class QuestionController {
      * @return
      */
     @PostMapping("/my/list/page/vo")
-    public BaseResponse<Page<QuestionVO>> listMyQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest, HttpServletRequest request) {
+    public BaseResponse<Page<QuestionVO>> listMyQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
+                                                                 HttpServletRequest request) {
         ThrowUtils.throwIf(questionQueryRequest == null, ErrorCode.PARAMS_ERROR);
         // 补充查询条件，只查询当前登录用户的数据
         User loginUser = userService.getLoginUser(request);
@@ -217,9 +213,7 @@ public class QuestionController {
      * @return
      */
     @PostMapping("/edit")
-    public BaseResponse
-            <Boolean> editQuestion(@RequestBody QuestionEditRequest questionEditRequest,
-                                   HttpServletRequest request) {
+    public BaseResponse<Boolean> editQuestion(@RequestBody QuestionEditRequest questionEditRequest, HttpServletRequest request) {
         if (questionEditRequest == null || questionEditRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -236,8 +230,7 @@ public class QuestionController {
         Question oldQuestion = questionService.getById(id);
         ThrowUtils.throwIf(oldQuestion == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可编辑
-        if (!oldQuestion.getUserId().equals(loginUser.getId()) &&
-                !userService.isAdmin(loginUser)) {
+        if (!oldQuestion.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         // 操作数据库

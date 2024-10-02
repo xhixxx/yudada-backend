@@ -14,9 +14,13 @@ import com.xhixxx.yudada.model.dto.userAnswer.UserAnswerAddRequest;
 import com.xhixxx.yudada.model.dto.userAnswer.UserAnswerEditRequest;
 import com.xhixxx.yudada.model.dto.userAnswer.UserAnswerQueryRequest;
 import com.xhixxx.yudada.model.dto.userAnswer.UserAnswerUpdateRequest;
+import com.xhixxx.yudada.model.entity.App;
 import com.xhixxx.yudada.model.entity.User;
 import com.xhixxx.yudada.model.entity.UserAnswer;
+import com.xhixxx.yudada.model.enums.ReviewStatusEnum;
 import com.xhixxx.yudada.model.vo.UserAnswerVO;
+import com.xhixxx.yudada.scoring.ScoringStrategyExecutor;
+import com.xhixxx.yudada.service.AppService;
 import com.xhixxx.yudada.service.UserAnswerService;
 import com.xhixxx.yudada.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +34,7 @@ import java.util.List;
 /**
  * 用户答案接口
  *
+ *
  */
 @RestController
 @RequestMapping("/userAnswer")
@@ -40,9 +45,15 @@ public class UserAnswerController {
     private UserAnswerService userAnswerService;
 
     @Resource
+    private AppService appService;
+
+    @Resource
     private UserService userService;
 
-// region 增删改查
+    @Resource
+    private ScoringStrategyExecutor scoringStrategyExecutor;
+
+    // region 增删改查
 
     /**
      * 创建用户答案
@@ -61,6 +72,13 @@ public class UserAnswerController {
         userAnswer.setChoices(JSONUtil.toJsonStr(choices));
         // 数据校验
         userAnswerService.validUserAnswer(userAnswer, true);
+        // 判断 app 是否存在
+        Long appId = userAnswerAddRequest.getAppId();
+        App app = appService.getById(appId);
+        ThrowUtils.throwIf(app == null, ErrorCode.NOT_FOUND_ERROR);
+        if (!ReviewStatusEnum.PASS.equals(ReviewStatusEnum.getEnumByValue(app.getReviewStatus()))) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR, "应用未通过审核，无法答题");
+        }
         // 填充默认值
         User loginUser = userService.getLoginUser(request);
         userAnswer.setUserId(loginUser.getId());
@@ -69,6 +87,15 @@ public class UserAnswerController {
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         // 返回新写入的数据 id
         long newUserAnswerId = userAnswer.getId();
+        // 调用评分模块
+        try {
+            UserAnswer userAnswerWithResult = scoringStrategyExecutor.doScore(choices, app);
+            userAnswerWithResult.setId(newUserAnswerId);
+            userAnswerService.updateById(userAnswerWithResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BusinessException(ErrorCode.OPERATION_ERROR, "评分错误");
+        }
         return ResultUtils.success(newUserAnswerId);
     }
 
@@ -169,7 +196,8 @@ public class UserAnswerController {
      * @return
      */
     @PostMapping("/list/page/vo")
-    public BaseResponse<Page<UserAnswerVO>> listUserAnswerVOByPage(@RequestBody UserAnswerQueryRequest userAnswerQueryRequest, HttpServletRequest request) {
+    public BaseResponse<Page<UserAnswerVO>> listUserAnswerVOByPage(@RequestBody UserAnswerQueryRequest userAnswerQueryRequest,
+                                                                   HttpServletRequest request) {
         long current = userAnswerQueryRequest.getCurrent();
         long size = userAnswerQueryRequest.getPageSize();
         // 限制爬虫
@@ -189,7 +217,8 @@ public class UserAnswerController {
      * @return
      */
     @PostMapping("/my/list/page/vo")
-    public BaseResponse<Page<UserAnswerVO>> listMyUserAnswerVOByPage(@RequestBody UserAnswerQueryRequest userAnswerQueryRequest, HttpServletRequest request) {
+    public BaseResponse<Page<UserAnswerVO>> listMyUserAnswerVOByPage(@RequestBody UserAnswerQueryRequest userAnswerQueryRequest,
+                                                                     HttpServletRequest request) {
         ThrowUtils.throwIf(userAnswerQueryRequest == null, ErrorCode.PARAMS_ERROR);
         // 补充查询条件，只查询当前登录用户的数据
         User loginUser = userService.getLoginUser(request);
@@ -213,8 +242,7 @@ public class UserAnswerController {
      * @return
      */
     @PostMapping("/edit")
-    public BaseResponse<Boolean> editUserAnswer(@RequestBody UserAnswerEditRequest userAnswerEditRequest,
-                                     HttpServletRequest request) {
+    public BaseResponse<Boolean> editUserAnswer(@RequestBody UserAnswerEditRequest userAnswerEditRequest, HttpServletRequest request) {
         if (userAnswerEditRequest == null || userAnswerEditRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -231,8 +259,7 @@ public class UserAnswerController {
         UserAnswer oldUserAnswer = userAnswerService.getById(id);
         ThrowUtils.throwIf(oldUserAnswer == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可编辑
-        if (!oldUserAnswer.getUserId().equals(loginUser.getId()) &&
-                !userService.isAdmin(loginUser)) {
+        if (!oldUserAnswer.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         // 操作数据库

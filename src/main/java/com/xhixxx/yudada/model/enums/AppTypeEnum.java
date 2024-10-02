@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 /**
  * App 应用类型枚举
+ *
+ *
  */
 public enum AppTypeEnum {
 

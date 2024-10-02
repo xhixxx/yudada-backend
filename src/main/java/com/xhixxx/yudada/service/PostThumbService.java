@@ -1,11 +1,13 @@
 package com.xhixxx.yudada.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.xhixxx.yudada.model.entity.PostThumb;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.xhixxx.yudada.model.entity.User;
 
 /**
  * 帖子点赞服务
+ *
+ *
  */
 public interface PostThumbService extends IService<PostThumb> {
 

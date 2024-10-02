@@ -1,6 +1,8 @@
 package com.xhixxx.yudada.model.vo;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.xhixxx.yudada.model.entity.UserAnswer;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
@@ -10,33 +12,34 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 用户答案视图
+ 用户答案视图
+ *
+ *
  */
 @Data
 public class UserAnswerVO implements Serializable {
-
     /**
-     * id
+     *
      */
     private Long id;
 
     /**
-     * 应用 id
+     应用 id
      */
     private Long appId;
 
     /**
-     * 应用类型（0-得分类，1-角色测评类）
+     应用类型（0-得分类，1-角色测评类）
      */
     private Integer appType;
 
     /**
-     * 评分策略（0-自定义，1-AI）
+     评分策略（0-自定义，1-AI）
      */
     private Integer scoringStrategy;
 
     /**
-     * 用户答案（JSON 数组）
+     用户答案（JSON 数组）
      */
     private List<String> choices;
 
@@ -96,8 +99,8 @@ public class UserAnswerVO implements Serializable {
             return null;
         }
         UserAnswer userAnswer = new UserAnswer();
-        BeanUtils.copyProperties(userAnswer, userAnswerVO);
-        userAnswerVO.setChoices(JSONUtil.toList(userAnswer.getChoices(), String.class));
+        BeanUtils.copyProperties(userAnswerVO, userAnswer);
+        userAnswer.setChoices(JSONUtil.toJsonStr(userAnswerVO.getChoices()));
         return userAnswer;
     }
 

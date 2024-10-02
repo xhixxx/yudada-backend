@@ -28,9 +28,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * 评分结果表接口
+ * 评分结果接口
  *
- * @from <a href="https://www.code-nav.cn">编程导航学习圈</a>
+ *
  */
 @RestController
 @RequestMapping("/scoringResult")
@@ -43,10 +43,10 @@ public class ScoringResultController {
     @Resource
     private UserService userService;
 
-// region 增删改查
+    // region 增删改查
 
     /**
-     * 创建评分结果表
+     * 创建评分结果
      *
      * @param scoringResultAddRequest
      * @param request
@@ -74,7 +74,7 @@ public class ScoringResultController {
     }
 
     /**
-     * 删除评分结果表
+     * 删除评分结果
      *
      * @param deleteRequest
      * @param request
@@ -101,7 +101,7 @@ public class ScoringResultController {
     }
 
     /**
-     * 更新评分结果表（仅管理员可用）
+     * 更新评分结果（仅管理员可用）
      *
      * @param scoringResultUpdateRequest
      * @return
@@ -130,7 +130,7 @@ public class ScoringResultController {
     }
 
     /**
-     * 根据 id 获取评分结果表（封装类）
+     * 根据 id 获取评分结果（封装类）
      *
      * @param id
      * @return
@@ -146,7 +146,7 @@ public class ScoringResultController {
     }
 
     /**
-     * 分页获取评分结果表列表（仅管理员可用）
+     * 分页获取评分结果列表（仅管理员可用）
      *
      * @param scoringResultQueryRequest
      * @return
@@ -163,7 +163,7 @@ public class ScoringResultController {
     }
 
     /**
-     * 分页获取评分结果表列表（封装类）
+     * 分页获取评分结果列表（封装类）
      *
      * @param scoringResultQueryRequest
      * @param request
@@ -171,19 +171,20 @@ public class ScoringResultController {
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<ScoringResultVO>> listScoringResultVOByPage(@RequestBody ScoringResultQueryRequest scoringResultQueryRequest,
-                                                                 HttpServletRequest request) {
+                                                               HttpServletRequest request) {
         long current = scoringResultQueryRequest.getCurrent();
         long size = scoringResultQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         // 查询数据库
-        Page<ScoringResult> scoringResultPage = scoringResultService.page(new Page<>(current, size), scoringResultService.getQueryWrapper(scoringResultQueryRequest));
+        Page<ScoringResult> scoringResultPage = scoringResultService.page(new Page<>(current, size),
+                scoringResultService.getQueryWrapper(scoringResultQueryRequest));
         // 获取封装类
         return ResultUtils.success(scoringResultService.getScoringResultVOPage(scoringResultPage, request));
     }
 
     /**
-     * 分页获取当前登录用户创建的评分结果表列表
+     * 分页获取当前登录用户创建的评分结果列表
      *
      * @param scoringResultQueryRequest
      * @param request
@@ -191,7 +192,7 @@ public class ScoringResultController {
      */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<ScoringResultVO>> listMyScoringResultVOByPage(@RequestBody ScoringResultQueryRequest scoringResultQueryRequest,
-                                                                   HttpServletRequest request) {
+                                                                 HttpServletRequest request) {
         ThrowUtils.throwIf(scoringResultQueryRequest == null, ErrorCode.PARAMS_ERROR);
         // 补充查询条件，只查询当前登录用户的数据
         User loginUser = userService.getLoginUser(request);
@@ -208,7 +209,7 @@ public class ScoringResultController {
     }
 
     /**
-     * 编辑评分结果表（给用户使用）
+     * 编辑评分结果（给用户使用）
      *
      * @param scoringResultEditRequest
      * @param request
@@ -232,8 +233,7 @@ public class ScoringResultController {
         ScoringResult oldScoringResult = scoringResultService.getById(id);
         ThrowUtils.throwIf(oldScoringResult == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可编辑
-        if (!oldScoringResult.getUserId().equals(loginUser.getId()) &&
-                !userService.isAdmin(loginUser)) {
+        if (!oldScoringResult.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         // 操作数据库

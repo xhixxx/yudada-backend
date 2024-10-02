@@ -2,6 +2,8 @@ package com.xhixxx.yudada.constant;
 
 /**
  * 文件常量
+ *
+ *
  */
 public interface FileConstant {
 
